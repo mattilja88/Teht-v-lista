@@ -1,7 +1,8 @@
+const TODOS = 'todos'
 const input = document.querySelector('input')
 const list = document.querySelector('table')
 const sort = document.querySelector('span')
-const todos = []
+let todos = JSON.parse(localStorage.getItem(TODOS))
 
 
 const addRow = () => {
@@ -9,6 +10,7 @@ const addRow = () => {
     todos.push(newTodo)
     addTableRow(newTodo)
     input.value = ''
+    localStorage.setItem(TODOS, JSON.stringify(todos))
 }
 
 const addTableRow = (text) => {
@@ -18,6 +20,12 @@ const addTableRow = (text) => {
 
     col1.innerHTML = text
     col2.innerHTML = '<a href="#" onClick="deleteRow(\'' + text + '\')">X</a>'
+}
+
+const renderArray = () => {
+    for (let i = 0; i<todos.length; i++) {
+        addTableRow(todos[i])
+    }
 }
 
 input.addEventListener('keypress', (event) => {
@@ -30,6 +38,7 @@ const deleteRow = (todo) => {
     const index = todos.indexOf(todo)
     todos.splice(index, 1)
     list.deleteRow(index)
+    localStorage.setItem(TODOS, JSON.stringify(todos))
 }
 
 
@@ -38,8 +47,12 @@ sort.addEventListener('click', () =>{
     for (let i = todos.length -1; i >= 0; i--){
         list.deleteRow(i)
     }
-    for (let i = 0; i<todos.length; i++){
-        addTableRow(todos[i])
-    }
+    renderArray()
 
 })
+
+if (todos === null) {
+    todos = []
+}
+
+renderArray()
